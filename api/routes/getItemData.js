@@ -24,14 +24,13 @@ router.post("/getItemData", async (req, res) => {
 async function runChromeEngine(usedURL) {
   try {
     const chrome = await puppeteer.launch({
-      headless: true,
+      headless: false,
       args: [
         `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36`,
       ],
     });
     const page = await chrome.newPage();
-    await page.goto(usedURL);
-    await page.waitForSelector("#aod-price-1", { timeout: 5000 });
+    await page.goto(usedURL, { waitUntil: "networkidle2" });
 
     body = await page.evaluate(() => {
       return document.querySelector("body").innerHTML;
@@ -59,17 +58,32 @@ function cheerioProd(HTMLbody) {
     "#pinned-offer-scroll-id #aod-price-0 .a-price .a-offscreen"
   )
     .text()
-    .trim();
-  //Finding $ sign index for splitting
-  const splitAt = newPriceString.indexOf("$");
+    .trim()
+    .replace("$", "")
+    .replace(",", "");
   //Splitting at the $, resulting in just the $ amount, and transversing it into a number with '+'
-  const newPrice = +newPriceString.slice(splitAt + 1);
+  const newPrice = Number(newPriceString);
   //Getting Lowest Price String
-  const usedPriceString = $("#aod-price-1 .a-price .a-offscreen").text().trim();
-  //Finding $ sign index for splitting
-  const splitIndex = usedPriceString.indexOf("$");
-  //Splitting at the $, resulting in just the $ amount, and transversing it into a number with '+'
-  const lowestPrice = +usedPriceString.slice(splitIndex + 1);
+  let allPricesArray = [];
+  const allPrices = $("#aod-offer #aod-offer-price .a-price .a-offscreen").map(
+    function (i, element) {
+      allPricesArray.push(
+        Number($(element).text().trim().replace("$", "").replace(",", ""))
+      );
+    }
+  );
+
+  let lowestPrice;
+
+  if (allPricesArray.length === 0) {
+    lowestPrice = 0;
+  } else {
+    allPricesArray.sort((a, b) => {
+      return a - b;
+    });
+
+    lowestPrice = allPricesArray[0];
+  }
 
   //Product Image
   const prodImg = $("#aod-asin-image-id").attr("src");

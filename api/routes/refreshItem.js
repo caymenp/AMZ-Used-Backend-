@@ -6,7 +6,9 @@ const itemModel = require("../models/itemModel");
 router.post("/refreshItem", async (req, res) => {
   const prodID = req.body._id;
   const prodURL = req.body.productURL;
-  let payload = { userEmail: "refreshITEM", productURL: prodURL };
+  const recentPrice = req.body.recentPrice;
+  const userEmail = req.body.userEmail;
+  let payload = { userEmail: userEmail, productURL: prodURL };
 
   let response = await axios.post(
     "https://api.amzused.com/app/getItemData",
@@ -16,6 +18,12 @@ router.post("/refreshItem", async (req, res) => {
   let fullPrice = response.data.fullPrice;
   let productPriceUsed = response.data.productPriceUsed;
   let prodImg = response.data.prodImg;
+
+  console.log("New used price", productPriceUsed.usedPrice);
+  console.log(
+    "If new price is lower: ",
+    productPriceUsed.usedPrice < recentPrice
+  );
 
   try {
     const refreshItem = await itemModel.findByIdAndUpdate(
