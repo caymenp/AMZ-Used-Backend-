@@ -19,10 +19,10 @@ router.post("/refreshItem", async (req, res) => {
   let productPriceUsed = response.data.productPriceUsed;
   let prodImg = response.data.prodImg;
 
-  console.log("New used price", productPriceUsed.usedPrice);
+  console.log("New used price", productPriceUsed[0].usedPrice);
   console.log(
     "If new price is lower: ",
-    productPriceUsed.usedPrice < recentPrice
+    productPriceUsed[0].usedPrice < recentPrice
   );
 
   try {
