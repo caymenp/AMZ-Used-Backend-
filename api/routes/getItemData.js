@@ -54,11 +54,8 @@ function cheerioProd(HTMLbody) {
   const prodURL = $('link[rel="canonical"]').attr("href");
 
   //Getting New Price String
-  const newPriceString = $(
-    "#pinned-offer-scroll-id #aod-price-0 .a-price .a-offscreen"
-  )
-    .text()
-    .trim()
+  const newPriceString = $("#twister-plus-price-data-price")
+    .attr("value")
     .replace("$", "")
     .replace(",", "");
   //Splitting at the $, resulting in just the $ amount, and transversing it into a number with '+'
