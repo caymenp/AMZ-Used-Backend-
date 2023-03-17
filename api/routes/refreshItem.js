@@ -24,6 +24,14 @@ router.post("/refreshItem", async (req, res) => {
     "If new price is lower: ",
     productPriceUsed[0].usedPrice < recentPrice
   );
+  console.log(
+    "If prices are the same: ",
+    productPriceUsed[0].usedPrice === recentPrice
+  );
+  console.log(
+    "If new price is higher: ",
+    productPriceUsed[0].usedPrice > recentPrice
+  );
 
   try {
     const refreshItem = await itemModel.findByIdAndUpdate(
