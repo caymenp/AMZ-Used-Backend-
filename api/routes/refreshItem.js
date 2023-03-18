@@ -20,7 +20,7 @@ router.post("/refreshItem", async (req, res) => {
 
   let productName = response.data.productName;
   let fullPrice = response.data.fullPrice;
-  let productPriceUsed = response.data.productPriceUsed;
+  let productPriceUsed = response.data.productPriceUsed[0].usedPrice;
   let prodImg = response.data.prodImg;
 
   if (productPriceUsed[0].usedPrice < recentPrice) {
