@@ -20,13 +20,13 @@ router.post("/refreshItem", async (req, res) => {
 
   let productName = response.data.productName;
   let fullPrice = response.data.fullPrice;
-  let productPriceUsed = response.data.productPriceUsed[0].usedPrice;
+  let productPriceUsed = response.data.productPriceUsed;
   let prodImg = response.data.prodImg;
 
   if (productPriceUsed[0].usedPrice < recentPrice) {
     //SEND EMAIL ALERT
     console.log("Sending Email!");
-    priceAlertController(userEmail, productName, productPriceUsed);
+    priceAlertController(userEmail, productName, productPriceUsed[0].usedPrice);
   }
 
   console.log("Sending Test Email!");
