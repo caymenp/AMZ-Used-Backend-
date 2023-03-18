@@ -30,7 +30,7 @@ router.post("/refreshItem", async (req, res) => {
   }
 
   console.log("Sending Test Email!");
-  priceAlertController(userEmail, productName, productPriceUsed);
+  priceAlertController(userEmail, productName, productPriceUsed[0].usedPrice);
 
   try {
     const refreshItem = await itemModel.findByIdAndUpdate(
