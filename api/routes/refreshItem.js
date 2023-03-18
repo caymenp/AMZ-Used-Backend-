@@ -2,6 +2,9 @@ const express = require("express");
 const router = express.Router();
 const axios = require("axios");
 const itemModel = require("../models/itemModel");
+const {
+  priceAlertController,
+} = require("../../emailControllers/priceAlertController");
 
 router.post("/refreshItem", async (req, res) => {
   const prodID = req.body._id;
@@ -15,23 +18,19 @@ router.post("/refreshItem", async (req, res) => {
     payload
   );
 
+  let productName = response.data.productName;
   let fullPrice = response.data.fullPrice;
   let productPriceUsed = response.data.productPriceUsed;
   let prodImg = response.data.prodImg;
 
-  console.log("New used price", productPriceUsed[0].usedPrice);
-  console.log(
-    "If new price is lower: ",
-    productPriceUsed[0].usedPrice < recentPrice
-  );
-  console.log(
-    "If prices are the same: ",
-    productPriceUsed[0].usedPrice === recentPrice
-  );
-  console.log(
-    "If new price is higher: ",
-    productPriceUsed[0].usedPrice > recentPrice
-  );
+  if (productPriceUsed[0].usedPrice < recentPrice) {
+    //SEND EMAIL ALERT
+    console.log("Sending Email!");
+    priceAlertController(userEmail, productName, productPriceUsed);
+  }
+
+  console.log("Sending Test Email!");
+  priceAlertController(userEmail, productName, productPriceUsed);
 
   try {
     const refreshItem = await itemModel.findByIdAndUpdate(
