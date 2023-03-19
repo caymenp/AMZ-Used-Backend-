@@ -44,14 +44,6 @@ database.once("connected", () => {
 //     console.error(error);
 //   });
 
-cron.schedule("0 0 2 * * *", function () {
-  scheduledRefresh();
-});
-
-cron.schedule("0 0 14 * * *", function () {
-  scheduledRefresh();
-});
-
 //Node to serve files from REACT client
 app.use(cors({ origin: "*" }));
 app.use(express.json());
@@ -66,3 +58,27 @@ app.use(function (err, req, res, next) {
 app.listen(3000, () => {
   console.log(`Server Started on port: 3000`);
 });
+
+cron.schedule(
+  "0 2 * * *",
+  () => {
+    console.log("Starting scheduled job!");
+    scheduledRefresh();
+  },
+  {
+    scheduled: true,
+    timezone: "America/Chicago",
+  }
+);
+
+cron.schedule(
+  "20 13 * * *",
+  () => {
+    console.log("Starting scheduled job!");
+    scheduledRefresh();
+  },
+  {
+    scheduled: true,
+    timezone: "America/Chicago",
+  }
+);

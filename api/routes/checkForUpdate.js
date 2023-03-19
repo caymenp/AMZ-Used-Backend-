@@ -1,7 +1,7 @@
 const axios = require("axios");
 const itemModel = require("../models/itemModel");
 
-scheduledRefresh = async () => {
+async function scheduledRefresh() {
   let allItems = await itemModel.find({});
 
   for (const item of allItems) {
@@ -19,5 +19,5 @@ scheduledRefresh = async () => {
         console.log(error);
       });
   }
-};
+}
 module.exports = { scheduledRefresh };
