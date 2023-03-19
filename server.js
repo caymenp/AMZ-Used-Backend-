@@ -5,9 +5,9 @@ const middleware = require("./api/routes");
 const cors = require("cors");
 const path = require("path");
 const sgMail = require("@sendgrid/mail");
-const testFunction = require("./api/routes/checkForUpdate");
 const cron = require("node-cron");
-const scheduledRefresh = require("./api/routes/checkForUpdate");
+const scheduledRefresh =
+  require("./api/routes/checkForUpdate").scheduledRefresh;
 
 const app = express();
 
@@ -72,7 +72,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "27 13 * * *",
+  "47 13 * * *",
   () => {
     console.log("Starting scheduled job!");
     scheduledRefresh();
