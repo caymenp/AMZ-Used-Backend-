@@ -6,6 +6,8 @@ const cors = require("cors");
 const path = require("path");
 const sgMail = require("@sendgrid/mail");
 const testFunction = require("./api/routes/checkForUpdate");
+const cron = require("node-cron");
+const scheduledRefresh = require("./api/routes/checkForUpdate");
 
 const app = express();
 
@@ -41,6 +43,14 @@ database.once("connected", () => {
 //   .catch((error) => {
 //     console.error(error);
 //   });
+
+cron.schedule("0 0 2 * * *", function () {
+  scheduledRefresh();
+});
+
+cron.schedule("0 0 14 * * *", function () {
+  scheduledRefresh();
+});
 
 //Node to serve files from REACT client
 app.use(cors({ origin: "*" }));

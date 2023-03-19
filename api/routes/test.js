@@ -93,7 +93,3 @@ function cheerioProd(HTMLbody) {
 
   console.log(itemData);
 }
-
-checkProduct(
-  "https://www.amazon.com/dp/B08QC9F16L?ref_=cm_sw_r_apin_dp_Y0BX8EP3PSH1F3ASXHVV"
-);

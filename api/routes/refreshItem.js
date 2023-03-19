@@ -25,12 +25,8 @@ router.post("/refreshItem", async (req, res) => {
 
   if (productPriceUsed[0].usedPrice < recentPrice) {
     //SEND EMAIL ALERT
-    console.log("Sending Email!");
     priceAlertController(userEmail, productName, productPriceUsed[0].usedPrice);
   }
-
-  console.log("Sending Test Email!");
-  priceAlertController(userEmail, productName, productPriceUsed[0].usedPrice);
 
   try {
     const refreshItem = await itemModel.findByIdAndUpdate(

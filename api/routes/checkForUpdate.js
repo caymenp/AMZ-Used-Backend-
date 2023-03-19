@@ -1,35 +1,23 @@
-const express = require("express");
 const axios = require("axios");
 const itemModel = require("../models/itemModel");
-const { json } = require("body-parser");
 
-async function testing() {
-  const totalDocs = await itemModel.countDocuments();
+scheduledRefresh = async () => {
+  let allItems = await itemModel.find({});
 
-  for await (const doc of itemModel.find()) {
-    const prodID = doc._id;
-    const productName = doc.productName;
-    const prodURL = doc.productURL;
-    const usedPriceArray = doc.productPriceUsed;
-    let lastItem = usedPriceArray[usedPriceArray.length - 1];
-
-    let payload = { _id: prodID, productURL: prodURL };
-    let response = await axios.post(
-      "https://api.amzused.com/app/refreshItem",
-      payload
-    );
-
-    let totalIndex = response.data.productPriceUsed.length;
-    let newPrice = response.data.productPriceUsed[totalIndex - 1].usedPrice;
-
-    if (newPrice < lastItem.usedPrice) {
-      console.log("New price is the lower");
-    } else if (newPrice === lastItem.usedPrice) {
-      console.log("Prices are the same");
-    } else {
-      console.log("New price is higher");
-    }
+  for (const item of allItems) {
+    let payload = {
+      _id: item._id,
+      productURL: item.productURL,
+      userEmail: item.userEmail,
+      recentPrice:
+        item.productPriceUsed[item.productPriceUsed.length - 1].usedPrice,
+    };
+    let res = await axios
+      .post("https://api.amzused.com/app/refreshItem", payload)
+      .then((response) => {})
+      .catch((error) => {
+        console.log(error);
+      });
   }
-}
-
-module.exports = { testing };
+};
+module.exports = { scheduledRefresh };
