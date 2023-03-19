@@ -2,10 +2,11 @@ const axios = require("axios");
 const itemModel = require("../models/itemModel");
 
 async function scheduledRefresh() {
+  console.log("Function: 'Scheduled Refresh' Starting!");
   let allItems = await itemModel.find({});
-
+  let payload;
   for (const item of allItems) {
-    let payload = {
+    payload = {
       _id: item._id,
       productURL: item.productURL,
       userEmail: item.userEmail,
@@ -14,7 +15,9 @@ async function scheduledRefresh() {
     };
     let res = await axios
       .post("https://api.amzused.com/app/refreshItem", payload)
-      .then((response) => {})
+      .then((response) => {
+        console.log("Updating");
+      })
       .catch((error) => {
         console.log(error);
       });
