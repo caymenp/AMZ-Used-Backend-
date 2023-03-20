@@ -24,10 +24,12 @@ router.post("/refreshItem", async (req, res) => {
   let prodImg = response.data.prodImg;
 
   if (productPriceUsed[0].usedPrice < recentPrice) {
-    //SEND EMAIL ALERT
+    //SEND EMAIL ALERT IF NEWLY REPORTED PRICE IS LOWER
+    priceAlertController(userEmail, productName, productPriceUsed[0].usedPrice);
+  } else if (recentPrice === 0 && productPriceUsed[0].usedPrice !== 0) {
+    //SEND EMAIL ALERT IF ITEM DID NOT HAVE A USED ITEM, BUT NOW DOES
     priceAlertController(userEmail, productName, productPriceUsed[0].usedPrice);
   }
-
   try {
     const refreshItem = await itemModel.findByIdAndUpdate(
       { _id: prodID },
