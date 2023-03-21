@@ -11,6 +11,7 @@ let productURL = "";
 let productUsedURL = "";
 
 router.post("/getItemData", async (req, res) => {
+  console.log(req.body);
   userEmail = req.body.userEmail;
   productURL = req.body.productURL;
   //Scraping Data

@@ -29,4 +29,5 @@ async function scheduledRefresh() {
     await makeCall(payload);
   }
 }
+scheduledRefresh();
 module.exports = { scheduledRefresh };
