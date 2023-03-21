@@ -9,7 +9,7 @@ function checkProduct(productURL) {
   const indexNum = productURL.indexOf("/dp/");
   const productNumber = productURL.slice(indexNum + 4, indexNum + 14);
   productUsedURL = `https://www.amazon.com/dp/${productNumber}/ref=olp-opf-redir?aod=1&ie=UTF8&condition=USED`;
-  runChromeEngine(productUsedURL);
+  runChromeEngine(productURL);
 }
 
 let body = "";
@@ -93,3 +93,7 @@ function cheerioProd(HTMLbody) {
 
   console.log(itemData);
 }
+
+checkProduct(
+  "https://www.amazon.com/dp/B07F7KJQWB/ref=olp-opf-redir?aod=1&ie=UTF8&tag=pricecut20-20&condition=USED"
+);
