@@ -7,20 +7,16 @@ const {
 } = require("../../emailControllers/priceAlertController");
 
 router.post("/refreshItem", async (req, res) => {
-  console.log("Here is the body: ", req.body);
   const prodID = req.body._id;
   const prodURL = req.body.productURL;
   const recentPrice = req.body.recentPrice;
   const email = req.body.userEmail;
   let payload = { userEmail: email, productURL: prodURL };
-  console.log(payload);
 
   let response = await axios.post(
     "https://api.amzused.com/app/getItemData",
     payload
   );
-
-  console.log("Response from Scraper: ", response.data);
 
   let productName = response.data.productName;
   let fullPrice = response.data.fullPrice;
