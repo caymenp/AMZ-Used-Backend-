@@ -50,6 +50,8 @@ function cheerioProd(HTMLbody) {
   //Getting Product Title
   const productTitle = $("#aod-asin-title-text").text().trim();
 
+  console.log(productTitle);
+
   //ProductURL
   const prodURL = $('link[rel="canonical"]').attr("href");
 
