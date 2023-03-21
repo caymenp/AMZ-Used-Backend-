@@ -54,10 +54,16 @@ function cheerioProd(HTMLbody) {
   const prodURL = $('link[rel="canonical"]').attr("href");
 
   //Getting New Price String
-  const newPriceString = $("#twister-plus-price-data-price")
-    .attr("value")
-    .replace("$", "")
-    .replace(",", "");
+  let newPriceString = $("#twister-plus-price-data-price").attr("value");
+
+  if (newPriceString.indexOf("$") >= 0) {
+    newPriceString = newPriceString.replace("$", "");
+  }
+
+  if (newPriceString.indexOf(",") >= 0) {
+    newPriceString = newPriceString.replace(",", "");
+  }
+
   //Splitting at the $, resulting in just the $ amount, and transversing it into a number with '+'
   const newPrice = Number(newPriceString);
   //Getting Lowest Price String
