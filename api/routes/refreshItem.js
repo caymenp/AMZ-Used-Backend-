@@ -15,11 +15,12 @@ router.post("/refreshItem", async (req, res) => {
   let payload = { userEmail: email, productURL: prodURL };
   console.log(payload);
 
-  let response = await axios
-    .post("https://api.amzused.com/app/getItemData", payload)
-    .then((res) => {
-      return res.data;
-    });
+  let response = await axios.post(
+    "https://api.amzused.com/app/getItemData",
+    payload
+  );
+
+  console.log("Response from Scraper: ", response.data);
 
   let productName = response.data.productName;
   let fullPrice = response.data.fullPrice;

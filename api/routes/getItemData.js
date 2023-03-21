@@ -19,6 +19,7 @@ router.post("/getItemData", async (req, res) => {
   const productNumber = productURL.slice(indexNum + 4, indexNum + 14);
   productUsedURL = `https://www.amazon.com/dp/${productNumber}/ref=olp-opf-redir?aod=1&ie=UTF8&tag=pricecut20-20&condition=USED`;
   await runChromeEngine(productUsedURL);
+  console.log("Sending Data Back from Scraper! : ", itemData);
   res.status(200).json(itemData);
 });
 
