@@ -13,10 +13,12 @@ router.post("/refreshItem", async (req, res) => {
   const email = req.body.userEmail;
   let payload = { userEmail: email, productURL: prodURL };
 
-  let response = await axios.post(
-    "https://api.amzused.com/app/getItemData",
-    payload
-  );
+  let response = await axios
+    .post("https://api.amzused.com/app/getItemData", payload)
+    .catch((error) => {
+      console.log("Error with GetItemData: ", error);
+      return;
+    });
 
   let productName = response.data.productName;
   let fullPrice = response.data.fullPrice;

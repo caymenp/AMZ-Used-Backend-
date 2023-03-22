@@ -4,16 +4,26 @@ const itemModel = require("../models/itemModel");
 async function makeCall(payload) {
   const res = await axios
     .post("https://api.amzused.com/app/refreshItem", payload)
-    .then(async (res) => {
-      await res.data;
-      return res.data;
+    .then((res) => {
+      if (res.status === 200) return;
+    })
+    .catch((err) => {
+      console.log("Error with API: ", err);
+      return;
     });
 }
 
 async function scheduledRefresh() {
-  let allItems = await itemModel.find({});
+  let allItems;
+  try {
+    allItems = await itemModel.find();
+  } catch (err) {
+    console.log("Mongo Error: ", err);
+  }
+
+  let payload;
   for (let i = 0; i < allItems.length; i++) {
-    let payload = {
+    payload = {
       _id: allItems[i]._id.toString(),
       productURL: allItems[i].productURL,
       userEmail: allItems[i].userEmail,

@@ -23,27 +23,6 @@ database.once("connected", () => {
   console.log("Database Connected");
 });
 
-// testFunction.testing();
-//SendGrid setup
-// sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-// const msg = {
-//   to: "caymenpope10@gmail.com",
-//   from: "app.amzused@gmail.com",
-//   subject: "TEST EMAIL",
-//   text: "testing email!",
-//   html: "<strong>Testing this new email!</strong>",
-// };
-
-// sgMail
-//   .send(msg)
-//   .then((response) => {
-//     console.log(response[0].statusCode);
-//     console.log(response[0].headers);
-//   })
-//   .catch((error) => {
-//     console.error(error);
-//   });
-
 //Node to serve files from REACT client
 app.use(cors({ origin: "*" }));
 app.use(express.json());
@@ -72,7 +51,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "47 13 * * *",
+  "30 12 * * *",
   () => {
     console.log("Starting scheduled job!");
     scheduledRefresh();
