@@ -24,6 +24,7 @@ router.post("/getItemData", async (req, res) => {
   } catch (error) {
     console.log("Error from /getItemData: ", error, runScrape);
     res.status(400).json({ message: error.message });
+    return;
   }
 });
 

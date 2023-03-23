@@ -28,9 +28,9 @@ const saveItemUpdate = async (newData, recentPrice) => {
       { $push: { productPriceUsed: productPriceUsed } },
       { returnDocument: "after" }
     );
-    return res.status(200).json(refreshItem);
+    return refreshItem.status;
   } catch (error) {
-    return res.status(400).json({ message: error.message });
+    return refreshItem.status;
   }
 };
 
@@ -51,8 +51,9 @@ router.post("/refreshItem", async (req, res) => {
     const resStatus = await response.status;
     if (resStatus === 200) {
       console.log("Sending Data to SaveItemUpdate(): ", response.data);
-      res = await saveItemUpdate(response.data, recentPrice);
-      return res;
+      const saveData = await saveItemUpdate(response.data, recentPrice);
+
+      return res.status(200).json(saveData);
     }
   } catch (error) {
     console.log("Error with GetItemData: ", error);
