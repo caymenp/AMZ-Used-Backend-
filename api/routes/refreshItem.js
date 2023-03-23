@@ -6,24 +6,14 @@ const {
   priceAlertController,
 } = require("../../emailControllers/priceAlertController");
 
-router.post("/refreshItem", async (req, res) => {
-  const prodID = req.body._id;
-  const prodURL = req.body.productURL;
-  const recentPrice = req.body.recentPrice;
-  const email = req.body.userEmail;
-  let payload = { userEmail: email, productURL: prodURL };
-
-  let response = await axios
-    .post("https://api.amzused.com/app/getItemData", payload)
-    .catch((error) => {
-      console.log("Error with GetItemData: ", error);
-      return;
-    });
+const saveItemUpdate = async (newData, recentPrice) => {
+  const response = newData;
 
   let productName = response.data.productName;
   let fullPrice = response.data.fullPrice;
   let productPriceUsed = response.data.productPriceUsed;
   let prodImg = response.data.prodImg;
+  let email = response.data.userEmail;
 
   if (productPriceUsed[0].usedPrice < recentPrice) {
     //SEND EMAIL ALERT IF NEWLY REPORTED PRICE IS LOWER
@@ -38,9 +28,35 @@ router.post("/refreshItem", async (req, res) => {
       { $push: { productPriceUsed: productPriceUsed } },
       { returnDocument: "after" }
     );
-    res.status(200).json(refreshItem);
+    return res.status(200).json(refreshItem);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    return res.status(400).json({ message: error.message });
+  }
+};
+
+router.post("/refreshItem", async (req, res) => {
+  const prodID = req.body._id;
+  const prodURL = req.body.productURL;
+  const recentPrice = req.body.recentPrice;
+  const email = req.body.userEmail;
+
+  //Payload for Scraping API
+  const payload = { userEmail: email, productURL: prodURL };
+
+  try {
+    const response = await axios.post(
+      "https://api.amzused.com/app/getItemData",
+      payload
+    );
+    const resStatus = await response.status;
+    if (resStatus === 200) {
+      console.log("Sending Data to SaveItemUpdate(): ", response.data);
+      res = await saveItemUpdate(response.data, recentPrice);
+      return res;
+    }
+  } catch (error) {
+    console.log("Error with GetItemData: ", error);
+    return res.status(400).json({ message: error.message });
   }
 });
 

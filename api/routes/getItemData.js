@@ -4,7 +4,6 @@ const axios = require("axios");
 const cheerio = require("cheerio");
 const puppeteer = require("puppeteer");
 
-let itemData = {};
 let body = "";
 let userEmail = "";
 let productURL = "";
@@ -17,8 +16,15 @@ router.post("/getItemData", async (req, res) => {
   const indexNum = productURL.indexOf("/dp/");
   const productNumber = productURL.slice(indexNum + 4, indexNum + 14);
   productUsedURL = `https://www.amazon.com/dp/${productNumber}/ref=olp-opf-redir?aod=1&ie=UTF8&tag=pricecut20-20&condition=USED`;
-  await runChromeEngine(productUsedURL);
-  res.status(200).json(itemData);
+
+  try {
+    const runScrape = await runChromeEngine(productUsedURL);
+    console.log("Item Data from router: ", runScrape);
+    res.status(200).json(runScrape);
+  } catch (error) {
+    console.log("Error from /getItemData: ", error, runScrape);
+    res.status(400).json({ message: error.message });
+  }
 });
 
 async function runChromeEngine(usedURL) {
@@ -35,14 +41,18 @@ async function runChromeEngine(usedURL) {
     body = await page.evaluate(() => {
       return document.querySelector("body").innerHTML;
     });
-    await chrome.close();
-    cheerioProd(body);
+    chrome.close();
+    const item = await cheerioProd(body);
+    console.log("From Chrome Engine: ", item);
+    return item;
   } catch (error) {
     console.log(error);
+    return;
   }
 }
 
-function cheerioProd(HTMLbody) {
+async function cheerioProd(HTMLbody) {
+  const itemData = {};
   // parsing the HTML source of the target web page with Cheerio
 
   const $ = cheerio.load(HTMLbody);
@@ -96,6 +106,8 @@ function cheerioProd(HTMLbody) {
   itemData.productName = productTitle;
   itemData.fullPrice = newPrice;
   itemData.productPriceUsed = [{ usedPrice: lowestPrice }];
+
+  return itemData;
 }
 
 module.exports = router;

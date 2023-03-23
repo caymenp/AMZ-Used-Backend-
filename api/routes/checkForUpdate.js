@@ -1,37 +1,43 @@
 const axios = require("axios");
 const itemModel = require("../models/itemModel");
 
-async function makeCall(payload) {
-  const res = await axios
-    .post("https://api.amzused.com/app/refreshItem", payload)
-    .then((res) => {
-      if (res.status === 200) return;
-    })
-    .catch((err) => {
-      console.log("Error with API: ", err);
-      return;
-    });
-}
-
 async function scheduledRefresh() {
+  //Getting All Documents from Mongo Collection
   let allItems;
   try {
     allItems = await itemModel.find();
   } catch (err) {
     console.log("Mongo Error: ", err);
+    return;
   }
 
-  let payload;
+  //Looping through items from Mongo Collection
+
   for (let i = 0; i < allItems.length; i++) {
-    payload = {
-      _id: allItems[i]._id.toString(),
-      productURL: allItems[i].productURL,
-      userEmail: allItems[i].userEmail,
-      recentPrice:
-        allItems[i].productPriceUsed[allItems[i].productPriceUsed.length - 1]
-          .usedPrice,
-    };
-    await makeCall(payload);
+    //Setting Payload Data for POST req to /refreshItem
+    const payload = {};
+    (payload._id = allItems[i]._id.toString()),
+      (payload.productURL = allItems[i].productURL),
+      (payload.userEmail = allItems[i].userEmail),
+      (payload.recentPrice =
+        allItems[i].productPriceUsed[
+          allItems[i].productPriceUsed.length - 1
+        ].usedPrice);
+
+    //Making Post Req
+    try {
+      console.log(`PAYLOAD ${i}: `, payload);
+      const response = await axios.post(
+        "https://api.amzused.com/app/refreshItem",
+        payload
+      );
+      const status = await response.status;
+      console.log("Status from makeCall(): ", status);
+      if (status === 200) continue;
+    } catch (error) {
+      console.log(error);
+      return;
+    }
   }
 }
 
