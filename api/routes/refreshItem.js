@@ -9,11 +9,11 @@ const {
 const saveItemUpdate = async (newData, recentPrice) => {
   const response = newData;
 
-  let productName = response.data.productName;
-  let fullPrice = response.data.fullPrice;
-  let productPriceUsed = response.data.productPriceUsed;
-  let prodImg = response.data.prodImg;
-  let email = response.data.userEmail;
+  let productName = response.productName;
+  let fullPrice = response.fullPrice;
+  let productPriceUsed = response.productPriceUsed;
+  let prodImg = response.prodImg;
+  let email = response.userEmail;
 
   if (productPriceUsed[0].usedPrice < recentPrice) {
     //SEND EMAIL ALERT IF NEWLY REPORTED PRICE IS LOWER
