@@ -42,22 +42,40 @@ router.post("/refreshItem", async (req, res) => {
 
   //Payload for Scraping API
   const payload = { userEmail: email, productURL: prodURL };
-
+  let response;
   try {
-    const response = await axios.post(
+    response = await axios.post(
       "https://api.amzused.com/app/getItemData",
       payload
     );
-    const resStatus = await response.status;
-    if (resStatus === 200) {
-      console.log("Sending Data to SaveItemUpdate(): ", response.data);
-      const saveData = await saveItemUpdate(response.data, recentPrice);
-
-      return res.status(200).json(saveData);
-    }
   } catch (error) {
     console.log("Error with GetItemData: ", error);
     return res.status(400).json({ message: error.message });
+  }
+
+  if (response.status === 200) {
+    const productName = response.data.productName;
+    const fullPrice = response.data.fullPrice;
+    const productPriceUsed = response.data.productPriceUsed;
+    const prodImg = response.data.prodImg;
+
+    if (productPriceUsed[0].usedPrice < recentPrice) {
+      //SEND EMAIL ALERT IF NEWLY REPORTED PRICE IS LOWER
+      priceAlertController(email, productName, productPriceUsed[0].usedPrice);
+    } else if (recentPrice === 0 && productPriceUsed[0].usedPrice !== 0) {
+      //SEND EMAIL ALERT IF ITEM DID NOT HAVE A USED ITEM, BUT NOW DOES
+      priceAlertController(email, productName, productPriceUsed[0].usedPrice);
+    }
+    try {
+      const saveItem = await itemModel.findByIdAndUpdate(
+        { _id: prodID },
+        { $push: { productPriceUsed: productPriceUsed } },
+        { returnDocument: "after" }
+      );
+      return res.status(200).json(saveItem);
+    } catch (error) {
+      return res.status(400).json({ message: error.message });
+    }
   }
 });
 
