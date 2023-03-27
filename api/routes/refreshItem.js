@@ -6,7 +6,7 @@ const {
   priceAlertController,
 } = require("../../emailControllers/priceAlertController");
 
-const saveItemUpdate = async (newData, recentPrice) => {
+const saveItemUpdate = async (newData, recentPrice, prodID) => {
   const res = newData.data;
 
   let productName = res.productName;
@@ -47,7 +47,7 @@ router.post("/refreshItem", async (req, res) => {
       .post("https://api.amzused.com/app/getItemData", payload)
       .then((response) => {
         console.log("Got response! : ");
-        const newItem = saveItemUpdate(response, recentPrice);
+        const newItem = saveItemUpdate(response, recentPrice, prodID);
         return res.status(200).json(newItem);
       });
   } catch (error) {
