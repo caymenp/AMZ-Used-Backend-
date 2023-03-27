@@ -18,8 +18,9 @@ router.post("/getItemData", async (req, res) => {
   productUsedURL = `https://www.amazon.com/dp/${productNumber}/ref=olp-opf-redir?aod=1&ie=UTF8&tag=pricecut20-20&condition=USED`;
 
   try {
-    let dataScraped = await runChromeEngine(productUsedURL);
-    return dataScraped;
+    const dataScraped = await runChromeEngine(productUsedURL);
+    console.log("DataScraped: ", dataScraped);
+    return res.status(200).json(dataScraped);
   } catch (error) {
     console.log("Error from /getItemData: ", error);
     return res.status(400).json({ message: error.message });
