@@ -51,7 +51,7 @@ cron.schedule(
 );
 
 cron.schedule(
-  "19 14 * * *",
+  "20 14 * * *",
   () => {
     console.log("Starting scheduled job!");
     scheduledRefresh();
