@@ -17,16 +17,13 @@ router.post("/getItemData", async (req, res) => {
   const productNumber = productURL.slice(indexNum + 4, indexNum + 14);
   productUsedURL = `https://www.amazon.com/dp/${productNumber}/ref=olp-opf-redir?aod=1&ie=UTF8&tag=pricecut20-20&condition=USED`;
 
-  const runScrape = await runChromeEngine(productUsedURL)
-    .then((res) => {
-      return res.status(200).json(res);
-    })
-    .catch((error) => {
-      console.log("Error from /getItemData: ", error, runScrape);
-      return res.status(400).json({ message: error.message });
-    });
-
-  res.status(200).json(runScrape);
+  try {
+    let runScrape = await runChromeEngine(productUsedURL);
+    return res.status(200).json(runScrape);
+  } catch (error) {
+    console.log("Error from /getItemData: ", error, runScrape);
+    return res.status(400).json({ message: error.message });
+  }
 });
 
 async function runChromeEngine(usedURL) {
