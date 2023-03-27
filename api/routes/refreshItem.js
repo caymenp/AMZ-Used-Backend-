@@ -23,7 +23,7 @@ const saveItemUpdate = async (newData, recentPrice) => {
     priceAlertController(email, productName, productPriceUsed[0].usedPrice);
   }
   try {
-    await itemModel.findByIdAndUpdate(
+    let saveItem = await itemModel.findByIdAndUpdate(
       { _id: prodID },
       { $push: { productPriceUsed: productPriceUsed } },
       { returnDocument: "after" }
