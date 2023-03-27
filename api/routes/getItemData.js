@@ -19,7 +19,7 @@ router.post("/getItemData", async (req, res) => {
 
   try {
     let dataScraped = await runChromeEngine(productUsedURL);
-    return res.status(200).json(dataScraped);
+    return dataScraped;
   } catch (error) {
     console.log("Error from /getItemData: ", error);
     return res.status(400).json({ message: error.message });
