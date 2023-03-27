@@ -18,10 +18,11 @@ router.post("/getItemData", async (req, res) => {
   productUsedURL = `https://www.amazon.com/dp/${productNumber}/ref=olp-opf-redir?aod=1&ie=UTF8&tag=pricecut20-20&condition=USED`;
 
   try {
-    let runScrape = await runChromeEngine(productUsedURL);
-    return res.status(200).json(runScrape);
+    await runChromeEngine(productUsedURL).then((res) => {
+      return res.status(200).json(res);
+    });
   } catch (error) {
-    console.log("Error from /getItemData: ", error, runScrape);
+    console.log("Error from /getItemData: ", error);
     return res.status(400).json({ message: error.message });
   }
 });
@@ -35,6 +36,7 @@ async function runChromeEngine(usedURL) {
       ],
     });
     const page = await chrome.newPage();
+    console.log("Chrome is open");
     await page.goto(usedURL, { waitUntil: "networkidle2" });
 
     body = await page.evaluate(() => {
@@ -50,6 +52,7 @@ async function runChromeEngine(usedURL) {
 
 async function cheerioProd(HTMLbody) {
   const itemData = {};
+  console.log("made it to cheerio");
   // parsing the HTML source of the target web page with Cheerio
 
   const $ = cheerio.load(HTMLbody);
@@ -104,6 +107,7 @@ async function cheerioProd(HTMLbody) {
   itemData.fullPrice = newPrice;
   itemData.productPriceUsed = [{ usedPrice: lowestPrice }];
 
+  console.log("returning to getItemData Main");
   return itemData;
 }
 
