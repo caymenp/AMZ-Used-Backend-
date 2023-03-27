@@ -28,9 +28,9 @@ const saveItemUpdate = async (newData, recentPrice) => {
       { $push: { productPriceUsed: productPriceUsed } },
       { returnDocument: "after" }
     );
-    return newData.status(200).json(saveItem);
+    return saveItem;
   } catch (error) {
-    return newData.status;
+    return error;
   }
 };
 
@@ -47,7 +47,8 @@ router.post("/refreshItem", async (req, res) => {
       .post("https://api.amzused.com/app/getItemData", payload)
       .then((res) => {
         console.log("Got response! : ", res);
-        return saveItemUpdate(res, recentPrice);
+        const newItem = saveItemUpdate(res, recentPrice);
+        return res.status(200).json(newItem);
       });
   } catch (error) {
     console.log("Error with GetItemData: ", error);
