@@ -42,16 +42,16 @@ async function runChromeEngine(usedURL) {
     body = await page.evaluate(() => {
       return document.querySelector("body").innerHTML;
     });
-    chrome.close();
+    await chrome.close();
   } catch (error) {
     console.log(error);
   }
 
-  const item = await cheerioProd(body);
+  const item = cheerioProd(body);
   return item;
 }
 
-async function cheerioProd(HTMLbody) {
+function cheerioProd(HTMLbody) {
   const itemData = {};
   console.log("made it to cheerio");
   // parsing the HTML source of the target web page with Cheerio
