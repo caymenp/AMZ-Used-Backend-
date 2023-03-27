@@ -28,6 +28,7 @@ const saveItemUpdate = async (newData, recentPrice, prodID) => {
       { $push: { productPriceUsed: productPriceUsed } },
       { returnDocument: "after" }
     );
+    console.log(saveItem);
     return saveItem;
   } catch (error) {
     return error;
