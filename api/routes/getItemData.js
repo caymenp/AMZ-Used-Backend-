@@ -18,7 +18,7 @@ router.post("/getItemData", async (req, res) => {
   productUsedURL = `https://www.amazon.com/dp/${productNumber}/ref=olp-opf-redir?aod=1&ie=UTF8&tag=pricecut20-20&condition=USED`;
 
   try {
-    const dataScraped = await runChromeEngine(productUsedURL);
+    await runChromeEngine(productUsedURL);
     console.log("DataScraped: ", dataScraped);
     return res.status(200).json(dataScraped);
   } catch (error) {
@@ -43,11 +43,12 @@ async function runChromeEngine(usedURL) {
       return document.querySelector("body").innerHTML;
     });
     chrome.close();
-    const item = await cheerioProd(body);
-    return item;
   } catch (error) {
     console.log(error);
   }
+
+  const item = await cheerioProd(body);
+  return item;
 }
 
 async function cheerioProd(HTMLbody) {
