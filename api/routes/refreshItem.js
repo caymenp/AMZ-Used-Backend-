@@ -7,13 +7,13 @@ const {
 } = require("../../emailControllers/priceAlertController");
 
 const saveItemUpdate = async (newData, recentPrice) => {
-  const response = newData;
+  const res = newData.data;
 
-  let productName = response.productName;
-  let fullPrice = response.fullPrice;
-  let productPriceUsed = response.productPriceUsed;
-  let prodImg = response.prodImg;
-  let email = response.userEmail;
+  let productName = res.productName;
+  let fullPrice = res.fullPrice;
+  let productPriceUsed = res.productPriceUsed;
+  let prodImg = res.prodImg;
+  let email = res.userEmail;
 
   if (productPriceUsed[0].usedPrice < recentPrice) {
     //SEND EMAIL ALERT IF NEWLY REPORTED PRICE IS LOWER
@@ -28,9 +28,9 @@ const saveItemUpdate = async (newData, recentPrice) => {
       { $push: { productPriceUsed: productPriceUsed } },
       { returnDocument: "after" }
     );
-    return refreshItem.status;
+    return newData.status(200).json(saveItem);
   } catch (error) {
-    return refreshItem.status;
+    return newData.status;
   }
 };
 
@@ -42,40 +42,15 @@ router.post("/refreshItem", async (req, res) => {
 
   //Payload for Scraping API
   const payload = { userEmail: email, productURL: prodURL };
-  let response;
   try {
-    response = await axios.post(
-      "https://api.amzused.com/app/getItemData",
-      payload
-    );
+    await axios
+      .post("https://api.amzused.com/app/getItemData", payload)
+      .then((res) => {
+        return saveItemUpdate(res, recentPrice);
+      });
   } catch (error) {
     console.log("Error with GetItemData: ", error);
     return res.status(400).json({ message: error.message });
-  }
-
-  if (response.status === 200) {
-    const productName = response.data.productName;
-    const fullPrice = response.data.fullPrice;
-    const productPriceUsed = response.data.productPriceUsed;
-    const prodImg = response.data.prodImg;
-
-    if (productPriceUsed[0].usedPrice < recentPrice) {
-      //SEND EMAIL ALERT IF NEWLY REPORTED PRICE IS LOWER
-      priceAlertController(email, productName, productPriceUsed[0].usedPrice);
-    } else if (recentPrice === 0 && productPriceUsed[0].usedPrice !== 0) {
-      //SEND EMAIL ALERT IF ITEM DID NOT HAVE A USED ITEM, BUT NOW DOES
-      priceAlertController(email, productName, productPriceUsed[0].usedPrice);
-    }
-    try {
-      const saveItem = await itemModel.findByIdAndUpdate(
-        { _id: prodID },
-        { $push: { productPriceUsed: productPriceUsed } },
-        { returnDocument: "after" }
-      );
-      return res.status(200).json(saveItem);
-    } catch (error) {
-      return res.status(400).json({ message: error.message });
-    }
   }
 });
 

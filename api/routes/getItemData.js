@@ -17,15 +17,16 @@ router.post("/getItemData", async (req, res) => {
   const productNumber = productURL.slice(indexNum + 4, indexNum + 14);
   productUsedURL = `https://www.amazon.com/dp/${productNumber}/ref=olp-opf-redir?aod=1&ie=UTF8&tag=pricecut20-20&condition=USED`;
 
-  try {
-    const runScrape = await runChromeEngine(productUsedURL);
-    console.log("Item Data from router: ", runScrape);
-    res.status(200).json(runScrape);
-  } catch (error) {
-    console.log("Error from /getItemData: ", error, runScrape);
-    res.status(400).json({ message: error.message });
-    return;
-  }
+  const runScrape = await runChromeEngine(productUsedURL)
+    .then((res) => {
+      res.status(200).json(runScrape);
+    })
+    .catch((error) => {
+      console.log("Error from /getItemData: ", error, runScrape);
+      res.status(400).json({ message: error.message });
+    });
+
+  res.status(200).json(runScrape);
 });
 
 async function runChromeEngine(usedURL) {
@@ -44,11 +45,9 @@ async function runChromeEngine(usedURL) {
     });
     chrome.close();
     const item = await cheerioProd(body);
-    console.log("From Chrome Engine: ", item);
     return item;
   } catch (error) {
     console.log(error);
-    return;
   }
 }
 

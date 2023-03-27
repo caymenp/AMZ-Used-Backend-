@@ -8,7 +8,6 @@ async function scheduledRefresh() {
     allItems = await itemModel.find();
   } catch (err) {
     console.log("Mongo Error: ", err);
-    return;
   }
 
   //Looping through items from Mongo Collection
@@ -27,16 +26,15 @@ async function scheduledRefresh() {
     //Making Post Req
     try {
       console.log(`PAYLOAD ${i}: `, payload);
-      const response = await axios.post(
-        "https://api.amzused.com/app/refreshItem",
-        payload
-      );
-      const status = await response.status;
-      console.log("Status from makeCall(): ", status);
-      if (status === 200) continue;
+      await axios
+        .post("https://api.amzused.com/app/refreshItem", payload)
+        .then((res) => {
+          if (res.status === 200) {
+            console.log("Success from checkForUpdate");
+          }
+        });
     } catch (error) {
-      console.log(error);
-      return;
+      console.log("Error in checkForUpdate: ", error);
     }
   }
 }
