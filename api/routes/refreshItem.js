@@ -45,9 +45,9 @@ router.post("/refreshItem", async (req, res) => {
   try {
     await axios
       .post("https://api.amzused.com/app/getItemData", payload)
-      .then((res) => {
-        console.log("Got response! : ", res);
-        const newItem = saveItemUpdate(res, recentPrice);
+      .then((response) => {
+        console.log("Got response! : ", response);
+        const newItem = saveItemUpdate(response, recentPrice);
         return res.status(200).json(newItem);
       });
   } catch (error) {
