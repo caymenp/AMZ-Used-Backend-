@@ -38,26 +38,26 @@ app.listen(3000, () => {
   console.log(`Server Started on port: 3000`);
 });
 
-cron.schedule(
-  "0 2 * * *",
-  () => {
-    console.log("Starting scheduled job!");
-    scheduledRefresh();
-  },
-  {
-    scheduled: true,
-    timezone: "America/Chicago",
-  }
-);
+// cron.schedule(
+//   "0 2 * * *",
+//   () => {
+//     console.log("Starting scheduled job!");
+//     scheduledRefresh();
+//   },
+//   {
+//     scheduled: true,
+//     timezone: "America/Chicago",
+//   }
+// );
 
-cron.schedule(
-  "34 14 * * *",
-  () => {
-    console.log("Starting scheduled job!");
-    scheduledRefresh();
-  },
-  {
-    scheduled: true,
-    timezone: "America/Chicago",
-  }
-);
+// cron.schedule(
+//   "34 14 * * *",
+//   () => {
+//     console.log("Starting scheduled job!");
+//     scheduledRefresh();
+//   },
+//   {
+//     scheduled: true,
+//     timezone: "America/Chicago",
+//   }
+// );
