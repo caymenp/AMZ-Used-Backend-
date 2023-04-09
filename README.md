@@ -4,7 +4,8 @@ Backend server built with Node.js with Express. Custom API endpoints utilizing A
 
 Take a look at the front end for AMZ-USED! [Check It Out!](https://github.com/caymenp/AMZ-USED-CLIENT)
 
-Let's Connect! [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/caymen)
+Let's Connect! 
+[![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/caymen)
 
 Web Scraping for product pricing is done by utilizing Puppeteer library to launch a headless Chromium browser. When the original product URL is entered, it is cut and parsed into a custom Amazon URL that expands the Amazon "other sellers" drawer. Puppeteer wait until this drawer is loaded before capturing the HTML, since Amazon uses javascript to dynamically load their product data.
 
